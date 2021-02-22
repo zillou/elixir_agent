@@ -1,8 +1,8 @@
 defmodule NewRelic.Telemetry.Finch do
   use GenServer
 
-  @finch_request_stop [:finch, :request, :stop]
-  # @finch_response_stop [:finch, :response, :stop]
+  # @finch_request_stop [:finch, :request, :stop]
+  @finch_response_stop [:finch, :response, :stop]
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -11,7 +11,7 @@ defmodule NewRelic.Telemetry.Finch do
   def init(_) do
     :telemetry.attach_many(
       {:new_relic, :finch},
-      [@finch_request_stop],
+      [@finch_response_stop],
       &__MODULE__.handle_event/4,
       %{}
     )
@@ -22,7 +22,7 @@ defmodule NewRelic.Telemetry.Finch do
 
   @component "Finch"
   def handle_event(
-        @finch_request_stop,
+        @finch_response_stop,
         %{duration: duration},
         %{host: host, method: method} = meta,
         _config
